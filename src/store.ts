@@ -1,4 +1,5 @@
 import { App, inject, reactive, readonly } from 'vue'
+import { uberRave } from './resources/uber-rave'
 import { songs } from './songs'
 import { Difficulty, Song } from './types'
 
@@ -40,10 +41,12 @@ class Store {
   }
 
   get selectedSong() {
+    return uberRave
+
     if (!this.state.songs.selectedId) {
       return
     }
-    return this.state.songs.all.get(this.state.songs.selectedId)
+    return this.state.songs.all.get(this.state.songs.selectedId!)
   }
 
   get allSongs(): Song[] {

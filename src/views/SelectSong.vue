@@ -34,6 +34,7 @@ import { useStore } from '../store'
 import { songSelectWidth } from '../style'
 import { useMenuState } from '../components/useMenuState'
 import Pulse from '../components/Pulse.vue'
+import { useRouter } from 'vue-router'
 
 export function reorderList<T>(
   list: T[],
@@ -69,6 +70,7 @@ export default defineComponent({
     const songItemRef = ref<HTMLDivElement>()
     const currentSongRef = ref<HTMLDivElement>()
     const menuState = useMenuState()
+    const router = useRouter()
 
     const focused = computed(() => {
       return menuState.focused.value === 'song-wheel'
@@ -106,12 +108,12 @@ export default defineComponent({
       }
     })
 
-    const selectSong = (direction: 'prev' | 'next') => {
+    const changeSong = (direction: 'prev' | 'next') => {
       songList.value = reorderList(songList.value, { direction })
     }
 
-    const next = () => selectSong('next')
-    const prev = () => selectSong('prev')
+    const next = () => changeSong('next')
+    const prev = () => changeSong('prev')
 
     const keyListener = (e: KeyboardEvent) => {
       if (menuState.focused.value !== 'song-wheel') {
@@ -123,11 +125,15 @@ export default defineComponent({
       }
 
       if (e.code === 'ArrowUp') {
-        selectSong('prev')
+        changeSong('prev')
       }
 
       if (e.code === 'ArrowDown') {
-        selectSong('next')
+        changeSong('next')
+      }
+
+      if (e.code === 'Enter') {
+        router.push('/gameplay')
       }
     }
 

@@ -1,15 +1,15 @@
-import type { Chart } from '@lmiller1990/rhythm-engine'
+import type { Chart } from "@lmiller1990/rhythm-engine";
 
 export const chart: Chart = {
   notes: [
-    { id: "1", code: "1", ms: 116 },
+    { id: "1", code: "1", ms: 30 },
     { id: "2", code: "2", ms: 201 },
-    { id: "3", code: "3", ms: 287 },
-    { id: "4", code: "4", ms: 373 },
-    { id: "5", code: "5", ms: 459 },
-    { id: "6", code: "6", ms: 544 },
-    { id: "7", code: "5", ms: 630 },
-    { id: "8", code: "4", ms: 716 },
+    { id: "3", code: "3", ms: 373 },
+    { id: "4", code: "4", ms: 544 },
+    { id: "5", code: "5", ms: 716 },
+    { id: "6", code: "6", ms: 887 },
+    { id: "7", code: "5", ms: 1059 },
+    { id: "8", code: "4", ms: 1230 },
     { id: "9", code: "3", ms: 1401 },
     { id: "10", code: "2", ms: 1573 },
     { id: "11", code: "1", ms: 1744 },
