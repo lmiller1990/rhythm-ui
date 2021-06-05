@@ -1,6 +1,6 @@
 import { App, inject, reactive, readonly } from 'vue'
 import { songs } from './songs'
-import { Song } from './types'
+import { Difficulty, Song } from './types'
 
 interface State {
   songs: {
@@ -8,6 +8,7 @@ interface State {
     ids: string[]
     all: Map<string, Song>
   }
+  selectedDifficulty: Difficulty
 }
 
 const sym = Symbol('store')
@@ -25,7 +26,8 @@ class Store {
         selectedId: undefined,
         all: new Map(songs.map(x => [x.id, x])),
         ids: songs.map(x => x.id)
-      }
+      },
+      selectedDifficulty: "easy"
     })
   }
 
@@ -46,6 +48,10 @@ class Store {
 
   get allSongs(): Song[] {
     return this.state.songs.ids.map(id => this.state.songs.all.get(id)!)
+  }
+
+  setSelectedDifficulty(difficulty: Difficulty) {
+    this.state.selectedDifficulty = difficulty
   }
 }
 

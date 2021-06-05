@@ -1,8 +1,9 @@
 <template>
   <div class="absolute" :style="style">
-    <div 
+    <pulse 
       :style="currentSongStyle" 
       class="absolute bg-gray-100 opacity-20"
+      :pulse="focused"
       ref="currentSongRef" 
     />
 
@@ -27,10 +28,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
+import { computed, defineComponent, onUnmounted, ref, watchEffect } from 'vue'
 import { Song } from '../types'
 import { useStore } from '../store'
 import { songSelectWidth } from '../style'
+import { useMenuState } from '../components/useMenuState'
+import Pulse from '../components/Pulse.vue'
 
 export function reorderList<T>(
   list: T[],
@@ -52,6 +55,10 @@ export function reorderList<T>(
 }
 
 export default defineComponent({
+  components: {
+    Pulse
+  },
+
   setup() {
     // current song is N songs from the start of the song list
     // eg songs[selectedSongOffset]
@@ -61,6 +68,12 @@ export default defineComponent({
     const songList = ref<Song[]>(store.allSongs)
     const songItemRef = ref<HTMLDivElement>()
     const currentSongRef = ref<HTMLDivElement>()
+    const menuState = useMenuState()
+
+    const focused = computed(() => {
+      return menuState.focused.value === 'song-wheel'
+    })
+
 
     watchEffect(() => {
       const currentSong = songList.value[selectedSongOffset]
@@ -100,18 +113,27 @@ export default defineComponent({
     const next = () => selectSong('next')
     const prev = () => selectSong('prev')
 
-    window.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (['ArrowLeft', 'ArrowRight'].includes(e.code)) {
+    const keyListener = (e: KeyboardEvent) => {
+      if (menuState.focused.value !== 'song-wheel') {
+        return
+      }
+
+      if (['ArrowUp', 'ArrowDown'].includes(e.code)) {
         e.preventDefault()
       }
 
-      if (e.code === 'ArrowLeft') {
+      if (e.code === 'ArrowUp') {
         selectSong('prev')
       }
 
-      if (e.code === 'ArrowRight') {
+      if (e.code === 'ArrowDown') {
         selectSong('next')
       }
+    }
+
+    window.addEventListener('keydown', keyListener)
+    onUnmounted(() => {
+      window.removeEventListener('keydown', keyListener)
     })
 
     return {
@@ -122,6 +144,7 @@ export default defineComponent({
       songList,
       next,
       prev,
+      focused
     }
   }
 })
@@ -132,4 +155,3 @@ export default defineComponent({
   transition: transform 0.2s ease;
 } 
 </style>
-
