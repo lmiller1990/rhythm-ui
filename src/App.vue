@@ -1,22 +1,54 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
+  <div class="relative">
+    <select-song />
+    <div class="absolute p-5" id="song-info" :style="style">
+      <song-info 
+        v-if="selectedSong"
+        :song="selectedSong"
+      />
+    </div>
+  </div>
 </template>
 
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts">
+import { computed, defineComponent } from 'vue'
+import { useStore } from './store'
+import { songSelectWidth } from './style'
+import SelectSong from './views/SelectSong.vue'
+import SongInfo from './views/SongInfo.vue'
 
-// This starter template is using Vue 3 experimental <script setup> SFCs
-// Check out https://github.com/vuejs/rfcs/blob/script-setup-2/active-rfcs/0000-script-setup.md
+export default defineComponent({
+  components: {
+    SelectSong,
+    SongInfo
+  },
+
+  setup() {
+    const store = useStore()
+    const selectedSong = computed(() => store.selectedSong)
+
+    const style = computed(() => {
+      return {
+        width: `calc(100% - ${songSelectWidth}px)`
+      }
+    })
+
+
+    return {
+      selectedSong,
+      style
+    }
+  }
+})
 </script>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#song-info {
+  left: 400px;
 }
 </style>
