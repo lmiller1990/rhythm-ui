@@ -3,7 +3,8 @@ import { Song } from '../../types'
 
 export const uberRave: Song = {
   id: '1',
-  name: 'Uber Rave',
+  displayName: 'Uber Rave',
+  name: 'uber-rave',
   bpm: 175,
   artist: 'Some artist',
   durationInSec: 110,

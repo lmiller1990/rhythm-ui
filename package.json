@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "static": "serve -p 5000"
+    "static": "serve -p 5000 src/"
   },
   "dependencies": {
     "@lmiller1990/rhythm-engine": "^0.0.2",
