@@ -1,14 +1,15 @@
 <template>
-  <div class="bg-gray-800 h-screen flex justify-center items-center" id="game-container">
+  <div class="bg-gray-800 h-screen flex justify-center items-end" id="game-container">
     <div class="flex justify-center">
       <div 
         v-once 
         id="lanes" 
-        class="bg-gray-300 relative grid grid-cols-6 gap-0.5 border-4"
+        class="relative grid grid-cols-6"
       >
+          <!-- class="relative overflow-hidden" -->
         <div 
           v-for="lane of lanes" 
-          class="relative overflow-hidden"
+          class="target relative note rounded-lg border border-2"
           :class="{
             // 'bg-gray-600': [1,3,4,6].includes(lane),
             // 'bg-gray-500': ![1,3,4,6].includes(lane)
@@ -16,6 +17,7 @@
           }"
           :data-game="`col-${lane}`" 
         >
+          <!-- <div class="target absolute note rounded-lg border border-2" /> -->
         </div>
       </div>
     </div>
@@ -51,7 +53,11 @@ export default defineComponent({
 <style scoped>
 #lanes {
   width: 350px;
-  height: calc(100vh - 100px);
+  height: calc(90vh);
+}
+
+.target {
+  height: calc(100vh / 50);
 }
 
 </style>

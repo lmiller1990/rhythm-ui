@@ -1,47 +1,37 @@
-import type { Chart } from "@lmiller1990/rhythm-engine";
+import type { Chart, ChartNote } from "@lmiller1990/rhythm-engine";
+
+const notes: ChartNote[] = []
+
+for (let i = 0; i < 100; i++) {
+  notes.push({
+    id: i.toString(),
+    ms: i * 600,
+    code: (i % 2 === 0 ? 3 : 4).toString()
+  })
+}
 
 export const chart: Chart = {
-  notes: [
-    { id: "1", code: "1", ms: 30 },
-    { id: "2", code: "2", ms: 201 },
-    { id: "3", code: "3", ms: 373 },
-    { id: "4", code: "4", ms: 544 },
-    { id: "5", code: "5", ms: 716 },
-    { id: "6", code: "6", ms: 887 },
-    { id: "7", code: "5", ms: 1059 },
-    { id: "8", code: "4", ms: 1230 },
-    { id: "9", code: "3", ms: 1401 },
-    { id: "10", code: "2", ms: 1573 },
-    { id: "11", code: "1", ms: 1744 },
-    { id: "12", code: "5", ms: 1916 },
-    { id: "13", code: "4", ms: 2087 },
-    { id: "14", code: "3", ms: 2259 },
-    { id: "15", code: "2", ms: 2430 },
-    { id: "16", code: "6", ms: 2601 },
-    { id: "17", code: "1", ms: 2773 },
-    { id: "18", code: "5", ms: 2944 },
-    { id: "19", code: "2", ms: 3116 },
-    { id: "20", code: "4", ms: 3287 },
-    { id: "21", code: "3", ms: 3459 },
-    { id: "22", code: "5", ms: 3630 },
-    { id: "23", code: "1", ms: 3801 },
-    { id: "24", code: "6", ms: 3973 },
-    { id: "25", code: "3", ms: 4144 },
-    { id: "26", code: "5", ms: 4230 },
-    { id: "27", code: "1", ms: 4316 },
-    { id: "28", code: "5", ms: 4401 },
-    { id: "29", code: "2", ms: 4487 },
-    { id: "30", code: "3", ms: 4573 },
-    { id: "31", code: "6", ms: 4659 },
-    { id: "32", code: "4", ms: 4744 },
-    { id: "33", code: "2", ms: 4830 },
-    { id: "34", code: "3", ms: 4916 },
-    { id: "35", code: "1", ms: 5001 },
-    { id: "36", code: "5", ms: 5087 },
-    { id: "37", code: "3", ms: 5173 },
-    { id: "38", code: "6", ms: 5259 },
-    { id: "39", code: "3", ms: 5344 },
-    { id: "40", code: "5", ms: 5430 },
-    { id: "41", code: "2", ms: 5516 },
-  ],
+  notes
+  // notes: [
+  //   { id: "1", code: "2", ms: 0 },
+  //   { id: "2", code: "4", ms: 343 },
+  //   { id: "3", code: "3", ms: 686 },
+  //   { id: "4", code: "5", ms: 1029 },
+  //   { id: "5", code: "2", ms: 1371 },
+  //   { id: "6", code: "3", ms: 1714 },
+  //   { id: "7", code: "4", ms: 2057 },
+  //   { id: "8", code: "5", ms: 2400 },
+  //   { id: "9", code: "2", ms: 2743 },
+  //   { id: "10", code: "5", ms: 3086 },
+  //   { id: "11", code: "3", ms: 3429 },
+  //   { id: "12", code: "4", ms: 3771 },
+  //   { id: "13", code: "2", ms: 4114 },
+  //   { id: "14", code: "5", ms: 4457 },
+  //   { id: "15", code: "4", ms: 4800 },
+  //   { id: "16", code: "3", ms: 5143 },
+  //   { id: "17", code: "2", ms: 5486 },
+  //   { id: "18", code: "5", ms: 5829 },
+  //   { id: "19", code: "2", ms: 6171 },
+  //   { id: "20", code: "4", ms: 6514 },
+  // ],
 };
