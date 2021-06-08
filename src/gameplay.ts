@@ -37,8 +37,8 @@ const mapping: Record<Key, Column> = {
   Quote: "6",
 };
 
-const NORMALIZE_CONSTANT = 0.5;
-const START_DELAY = 2500;
+const NORMALIZE_CONSTANT = 1; // 0.5;
+const START_DELAY = 1000;
 const SONG_OFFSET = 575;
 
 let notes = new Map<string, UINote>()
@@ -81,7 +81,6 @@ function gameLoop(state: World) {
 
   for (const [id, note] of notes) {
     const engineNote = state.chart.notes.get(note.id)!;
-    const uiNote = notes.get(id)!
     const yPos = engineNote.ms + START_DELAY - state.time;
     note.$el.style.top = `${yPos * NORMALIZE_CONSTANT}px`;
   }
@@ -109,7 +108,7 @@ function gameLoop(state: World) {
 
   const newWorld: World = {
     chart: newState.chart,
-    time: frameTime,
+    time: frameTime + START_DELAY,
     inputs,
   };
 
@@ -175,7 +174,6 @@ export function init({
     []
   );
 
-
   const getCol = (col: Column) =>
     document.querySelector<HTMLDivElement>(`[data-game=col-${col}]`)!;
 
@@ -190,7 +188,8 @@ export function init({
     const $note = document.createElement("div");
     $note.className = `bg-gray-300 absolute note rounded-lg`;
     $note.style.height = `calc(100vh / 50)`
-    $note.style.top = `-100000px`
+    const yPos = gameNote.ms + START_DELAY
+    $note.style.top = `${yPos * NORMALIZE_CONSTANT}px`;
     cols.get(gameNote.code as Column)!.appendChild($note);
     notes.set(gameNote.id, {
       id: gameNote.id,
@@ -200,14 +199,14 @@ export function init({
   }
 
   initializeAudio(song, () => {
-    startTime = performance.now();
-    lastUpdate = startTime;
-    const world: World = {
-      inputs: [],
-      time: startTime,
-      chart: gameChart,
-    };
-    initKeydownListener();
-    window.requestAnimationFrame(() => gameLoop(world));
   });
+  startTime = performance.now();
+  lastUpdate = startTime;
+  const world: World = {
+    inputs: [],
+    time: startTime,
+    chart: gameChart,
+  };
+  initKeydownListener();
+   window.requestAnimationFrame(() => gameLoop(world));
 }

@@ -9,18 +9,14 @@
           <!-- class="relative overflow-hidden" -->
         <div 
           v-for="lane of lanes" 
-          class="target relative note rounded-lg border border-2"
-          :class="{
-            // 'bg-gray-600': [1,3,4,6].includes(lane),
-            // 'bg-gray-500': ![1,3,4,6].includes(lane)
-            'bg-gray-600': true
-          }"
+          class="bg-gray-600 target relative note rounded-lg"
           :data-game="`col-${lane}`" 
         >
-          <!-- <div class="target absolute note rounded-lg border border-2" /> -->
+          <div class="target absolute note rounded-lg border border-2 " />
         </div>
       </div>
     </div>
+          <!-- <div class="target absolute note rounded-lg border border-2" /> -->
   </div>
 </template>
 
@@ -69,7 +65,7 @@ export default defineComponent({
 
 @keyframes lane-flash {
   0%   { 
-    opacity: 0.8;
+    opacity: 0.75;
   }
   100% { 
     opacity: 1;
@@ -77,7 +73,7 @@ export default defineComponent({
 }
 
 .lane-flash {
-  animation: lane-flash 0.25s;
+  animation: lane-flash 0.5s;
 }
 
 </style>
