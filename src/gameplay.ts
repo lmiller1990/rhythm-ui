@@ -37,19 +37,18 @@ const mapping: Record<Key, Column> = {
   Quote: "6",
 };
 
-const NORMALIZE_CONSTANT = 1; // 0.5;
+const NORMALIZE_CONSTANT = 1;
 const START_DELAY = 1000;
 const SONG_OFFSET = 575;
 
 let notes = new Map<string, UINote>()
 let playing = false;
-let lastUpdate: number;
 
 const cols = new Map<Column, HTMLDivElement>()
 
 let inputs: Input[] = [];
 
-function initKeydownListener() {
+function initKeydownListener(startTime: number) {
   window.addEventListener("keydown", (event: KeyboardEvent) => {
     const col = event.code as Key
     const code = mapping[col];
@@ -65,11 +64,13 @@ function initKeydownListener() {
     }, 0)
 
     inputs.push({
-      ms: event.timeStamp,
+      ms: event.timeStamp - startTime - START_DELAY,
       code,
     });
   });
 }
+
+let frameCount = 0
 
 function gameLoop(state: World) {
   const frameTime = performance.now();
@@ -79,10 +80,16 @@ function gameLoop(state: World) {
     playing = true;
   }
 
+  const deltaTime = frameTime - state.startTime
+
   for (const [id, note] of notes) {
     const engineNote = state.chart.notes.get(note.id)!;
-    const yPos = engineNote.ms + START_DELAY - state.time;
+    const yPos = engineNote.ms - deltaTime + START_DELAY
     note.$el.style.top = `${yPos * NORMALIZE_CONSTANT}px`;
+
+    if (engineNote.hitAt) {
+      note.$el.remove()
+    }
   }
 
   if (notes.size === 0) {
@@ -91,7 +98,8 @@ function gameLoop(state: World) {
     return;
   }
 
-  const newState = updateGameState(state, config);
+  // console.log(deltaTime)
+  const newState = updateGameState({ ...state, time: deltaTime + START_DELAY }, config);
 
   if (newState.previousFrameMeta.judgementResults.length) {
     // some notes were judged on the previous window
@@ -107,8 +115,9 @@ function gameLoop(state: World) {
   }
 
   const newWorld: World = {
+    ...state,
     chart: newState.chart,
-    time: frameTime + START_DELAY,
+    time: frameTime,
     inputs,
   };
 
@@ -116,6 +125,12 @@ function gameLoop(state: World) {
     inputs = [];
   }
 
+  if (frameCount > 10) {
+    // return
+  }
+
+  // console.log('animate', state.time)
+  frameCount++
   requestAnimationFrame(() => gameLoop(newWorld));
 }
 
@@ -188,8 +203,8 @@ export function init({
     const $note = document.createElement("div");
     $note.className = `bg-gray-300 absolute note rounded-lg`;
     $note.style.height = `calc(100vh / 50)`
-    const yPos = gameNote.ms + START_DELAY
-    $note.style.top = `${yPos * NORMALIZE_CONSTANT}px`;
+    // const yPos = gameNote.ms + START_DELAY
+    // $note.style.top = `${yPos * NORMALIZE_CONSTANT}px`;
     cols.get(gameNote.code as Column)!.appendChild($note);
     notes.set(gameNote.id, {
       id: gameNote.id,
@@ -200,13 +215,14 @@ export function init({
 
   initializeAudio(song, () => {
   });
+
   startTime = performance.now();
-  lastUpdate = startTime;
   const world: World = {
     inputs: [],
+    startTime,
     time: startTime,
     chart: gameChart,
   };
-  initKeydownListener();
+  initKeydownListener(startTime);
    window.requestAnimationFrame(() => gameLoop(world));
 }
