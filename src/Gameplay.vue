@@ -1,4 +1,5 @@
 <template>
+  <a href="/">Back</a>
   <div class="bg-gray-800 h-screen flex justify-center items-end" id="game-container">
     <div class="flex justify-center">
       <div 
@@ -6,7 +7,6 @@
         id="lanes" 
         class="relative grid grid-cols-6"
       >
-          <!-- class="relative overflow-hidden" -->
         <div 
           v-for="lane of lanes" 
           class="bg-gray-600 target relative note rounded-lg"
@@ -16,7 +16,6 @@
         </div>
       </div>
     </div>
-          <!-- <div class="target absolute note rounded-lg border border-2" /> -->
   </div>
 </template>
 

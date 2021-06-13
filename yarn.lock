@@ -25,10 +25,10 @@
     "@babel/helper-validator-identifier" "^7.14.0"
     to-fast-properties "^2.0.0"
 
-"@lmiller1990/rhythm-engine@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@lmiller1990/rhythm-engine/-/rhythm-engine-0.0.3.tgz#bf2eaa7ba238dbd7d8482a29ea197c9ce4562c40"
-  integrity sha512-6i2IUOh2h8QmzP+gapXYV5AgE2ihQAUiKJ5hyPCC7Az5WChtk4jErlCKNtei4ayy587iw+3Vi+3rVJZcY3yljA==
+"@lmiller1990/rhythm-engine@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@lmiller1990/rhythm-engine/-/rhythm-engine-0.0.4.tgz#7b84dd56d79d2c8a355b8f8e617eef4f5bf2669f"
+  integrity sha512-cH7ULb2aZr1M+Tq6SWkKq7bBCkE3jCzTpnNaRkQWqy1sIc2dN9Dg/X2g9NNse/KJohiVRRF4yfnOwrLzY/WYgg==
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"

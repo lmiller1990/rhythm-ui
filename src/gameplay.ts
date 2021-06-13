@@ -3,6 +3,7 @@ import {
   GameNote,
   initGameState,
   Input,
+  timeOfLastNote,
   updateGameState,
   World,
 } from "@lmiller1990/rhythm-engine";
@@ -223,6 +224,13 @@ export function init({
   DELAY = song.offset
 
   const startGame = () => {
+    const END_BUFFER = 1000
+    const endTime = timeOfLastNote(chart) + song.offset + END_BUFFER
+
+    setTimeout(() => {
+      console.log('Done!!')
+    }, endTime)
+
     audio.play()
     startTime = performance.now();
     const world: World = {

@@ -6,7 +6,7 @@
     "static": "serve -p 5000 src/"
   },
   "dependencies": {
-    "@lmiller1990/rhythm-engine": "^0.0.3",
+    "@lmiller1990/rhythm-engine": "^0.0.4",
     "vue": "^3.0.5",
     "vue-router": "^4.0.8"
   },
