@@ -3,13 +3,23 @@ import {
   GameNote,
   initGameState,
   Input,
+  summarizeResults,
   timeOfLastNote,
   updateGameState,
   World,
 } from "@lmiller1990/rhythm-engine";
 import { Difficulty, Song } from "./types";
+import { EventEmitter } from 'events'
 
 const windows = ["perfect", "great"] as const;
+
+export const emitter = new EventEmitter()
+
+declare global {
+  interface Window {
+    world: World
+  }
+}
 
 const config: EngineConfiguration = {
   maxHitWindow: 100,
@@ -139,6 +149,8 @@ function gameLoop(state: World) {
     // return
   }
 
+  window.world = newWorld
+
   // console.log('animate', state.time)
   frameCount++;
   requestAnimationFrame(() => gameLoop(newWorld));
@@ -228,7 +240,8 @@ export function init({
     const endTime = timeOfLastNote(chart) + song.offset + END_BUFFER
 
     setTimeout(() => {
-      console.log('Done!!')
+      const summary = summarizeResults(window.world, windows)
+      emitter.emit('gameplay:done', { summary })
     }, endTime)
 
     audio.play()

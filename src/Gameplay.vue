@@ -20,22 +20,27 @@
 </template>
 
 <script lang="ts">
-import {} from '@lmiller1990/rhythm-engine'
 import { defineComponent, onMounted } from 'vue';
-import { init } from './gameplay'
+import { Summary } from '@lmiller1990/rhythm-engine'
+import { useRouter } from 'vue-router'
+import { init, emitter } from './gameplay'
 import { useStore } from './store';
 
 export default defineComponent({
   setup() {
     const lanes = [1, 2, 3, 4, 5, 6]
+    const store = useStore()
+    const router = useRouter()
 
     onMounted(() => {
-      const store = useStore()
-
       init({
         song: store.selectedSong!,
         difficulty: 'hard',
       })
+    })
+
+    emitter.on('gameplay:done', ({ summary }: { summary: Summary }) => {
+      router.push('/summary')
     })
 
     return {

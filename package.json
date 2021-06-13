@@ -7,10 +7,12 @@
   },
   "dependencies": {
     "@lmiller1990/rhythm-engine": "^0.0.4",
+    "events": "^3.3.0",
     "vue": "^3.0.5",
     "vue-router": "^4.0.8"
   },
   "devDependencies": {
+    "@types/events": "^3.0.0",
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.5",
     "serve": "^11.3.2",
