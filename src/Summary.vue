@@ -1,4 +1,7 @@
 <template>
+  <div class="grid grid-cols-2 gap-2 my-4">
+    <div class="text-6xl">98.98%</div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -9,7 +12,6 @@ import { useStore } from "./store";
 export default defineComponent({
   setup() {
     const store = useStore();
-    const router = useRouter();
 
     const summary = store.getState().gameplaySummary;
 
