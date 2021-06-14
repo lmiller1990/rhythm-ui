@@ -1,15 +1,31 @@
+import { Summary } from '@lmiller1990/rhythm-engine'
 import { App, inject, reactive, readonly } from 'vue'
 import { uberRave } from './resources/uber-rave'
 import { songs } from './songs'
 import { Difficulty, Song } from './types'
 
 interface State {
+  /**
+   * all the songs in the system, and the id of the currently selected on.
+   * it's set on the select song page.
+   */
   songs: {
     selectedId: string | undefined
     ids: string[]
     all: Map<string, Song>
   }
+
+  /**
+   * selected difficulty. it's set from the select song page.
+   */
   selectedDifficulty: Difficulty
+
+  /**
+   * summary of the last song that was played.
+   * it's populated after the gameplay finishes,
+   * but before routing to the /summary route
+   */
+  gameplaySummary: Summary | undefined
 }
 
 const sym = Symbol('store')
@@ -28,7 +44,8 @@ class Store {
         all: new Map(songs.map(x => [x.id, x])),
         ids: songs.map(x => x.id)
       },
-      selectedDifficulty: "easy"
+      selectedDifficulty: "easy",
+      gameplaySummary: undefined,
     })
   }
 

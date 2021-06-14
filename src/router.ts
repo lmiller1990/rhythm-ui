@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import Menu from "./Menu.vue";
+import Summary from "./Summary.vue";
 import Gameplay from "./Gameplay.vue";
 
 export const router = createRouter({
@@ -11,6 +12,10 @@ export const router = createRouter({
     },
     {
       component: Gameplay,
+      path: "/gameplay",
+    },
+    {
+      component: Summary,
       path: "/gameplay",
     },
   ],
