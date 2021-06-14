@@ -10,8 +10,7 @@ import {
 } from "@lmiller1990/rhythm-engine";
 import { Difficulty, Song } from "./types";
 import { EventEmitter } from 'events'
-
-const windows = ["perfect", "great"] as const;
+import { windows } from './constants'
 
 export const emitter = new EventEmitter()
 
