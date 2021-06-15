@@ -7,7 +7,7 @@ import 'virtual:windi.css'
 describe("Summary", () => {
   const state = createInitState();
   before(() => {
-    cy.viewport(800, 450)
+    cy.viewport(1600, 900)
   })
 
   it("renders", () => {
