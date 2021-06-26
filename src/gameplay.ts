@@ -239,6 +239,7 @@ export function init({
     const endTime = timeOfLastNote(chart) + song.offset + END_BUFFER
 
     setTimeout(() => {
+      audio.pause()
       const summary = summarizeResults(window.world, windows)
       emitter.emit('gameplay:done', { summary })
     }, endTime)

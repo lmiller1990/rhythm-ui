@@ -16,7 +16,7 @@ export const router = createRouter({
     },
     {
       component: Summary,
-      path: "/gameplay",
+      path: "/summary",
     },
   ],
 });

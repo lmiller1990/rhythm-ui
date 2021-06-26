@@ -40,6 +40,7 @@ export default defineComponent({
     })
 
     emitter.on('gameplay:done', ({ summary }: { summary: Summary }) => {
+      store.setSummary(summary)
       router.push('/summary')
     })
 

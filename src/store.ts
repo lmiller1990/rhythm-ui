@@ -77,6 +77,10 @@ class Store {
   setSelectedDifficulty(difficulty: Difficulty) {
     this.state.selectedDifficulty = difficulty;
   }
+
+  setSummary(gameplaySummary: Summary) {
+    this.state.gameplaySummary = gameplaySummary
+  }
 }
 
 export const store = new Store();

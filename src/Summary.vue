@@ -36,8 +36,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, FunctionalComponent, h } from "vue";
+import { defineComponent, FunctionalComponent, h, onBeforeMount, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
+import { router } from "./router";
 import { useStore } from "./store";
 
 const TimingCount: FunctionalComponent<{ label: string; count: number }> = ({
@@ -68,14 +69,27 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-
     const summary = store.getState().gameplaySummary;
+
+    const next = () => router.push("/")
 
     if (!summary) {
       throw Error(
         "Somehow arrived at summary screen without a summary in the store. This should never happen."
       );
     }
+
+    const listener = (e: KeyboardEvent) => {
+      if (e.code === 'Enter') {
+        next()
+      }
+    }
+
+    window.addEventListener('keydown', listener)
+
+    onBeforeUnmount(() => {
+      window.removeEventListener('keydown', listener)
+    })
 
     return {
       summary,
