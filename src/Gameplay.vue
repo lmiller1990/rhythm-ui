@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onBeforeUnmount, onMounted } from 'vue';
 import { Summary } from '@lmiller1990/rhythm-engine'
 import { useRouter } from 'vue-router'
 import { init, emitter } from './gameplay'
@@ -37,6 +37,10 @@ export default defineComponent({
         song: store.selectedSong!,
         difficulty: 'hard',
       })
+    })
+
+    onBeforeUnmount(() => {
+      console.log('Unmount!')
     })
 
     emitter.on('gameplay:done', ({ summary }: { summary: Summary }) => {

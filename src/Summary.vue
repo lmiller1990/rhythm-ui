@@ -38,7 +38,6 @@
 <script lang="ts">
 import { defineComponent, FunctionalComponent, h, onBeforeMount, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
-import { router } from "./router";
 import { useStore } from "./store";
 
 const TimingCount: FunctionalComponent<{ label: string; count: number }> = ({
@@ -69,6 +68,7 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
+    const router = useRouter();
     const summary = store.getState().gameplaySummary;
 
     const next = () => router.push("/")

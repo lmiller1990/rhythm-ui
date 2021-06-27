@@ -1,5 +1,7 @@
 import {
+  Chart,
   EngineConfiguration,
+  GameChart,
   GameNote,
   initGameState,
   Input,
@@ -9,14 +11,14 @@ import {
   World,
 } from "@lmiller1990/rhythm-engine";
 import { Difficulty, Song } from "./types";
-import { EventEmitter } from 'events'
-import { windows } from './constants'
+import { EventEmitter } from "events";
+import { windows } from "./constants";
 
-export const emitter = new EventEmitter()
+export const emitter = new EventEmitter();
 
 declare global {
   interface Window {
-    world: World
+    world: World;
   }
 }
 
@@ -38,6 +40,12 @@ type Column = "1" | "2" | "3" | "4" | "5" | "6";
 
 type Key = "KeyA" | "KeyS" | "KeyD" | "KeyL" | "Semicolon" | "Quote";
 
+interface UINote {
+  id: string;
+  $el: HTMLDivElement;
+  ticked: boolean;
+}
+
 const mapping: Record<Key, Column> = {
   KeyA: "1",
   KeyS: "2",
@@ -48,19 +56,11 @@ const mapping: Record<Key, Column> = {
 };
 
 const NORMALIZE_CONSTANT = 1;
-// const START_DELAY = 1000;
-// const SONG_OFFSET = 80;
-// const DELAY = START_DELAY + SONG_OFFSET
-let DELAY: number
-
-let notes = new Map<string, UINote>();
-let playing = false;
 
 const cols = new Map<Column, HTMLDivElement>();
-
 let inputs: Input[] = [];
 
-function initKeydownListener(startTime: number) {
+function initKeydownListener(startTime: number, delay: number) {
   window.addEventListener("keydown", (event: KeyboardEvent) => {
     const col = event.code as Key;
     const code = mapping[col];
@@ -76,15 +76,22 @@ function initKeydownListener(startTime: number) {
     }, 0);
 
     inputs.push({
-      ms: event.timeStamp - startTime - DELAY,
+      ms: event.timeStamp - startTime - delay,
       code,
     });
   });
 }
 
-let frameCount = 0;
+interface GameplayMeta {
+  startTime: number
+  delay: number
+  playing: boolean
+  audio: HTMLAudioElement
+  notes: Map<string, UINote>
+  frameCount: number
+}
 
-function gameLoop(state: World) {
+function gameLoop(state: World, { delay, startTime, playing, audio, notes, frameCount }: GameplayMeta) {
   const frameTime = performance.now();
 
   if (!playing && frameTime - startTime) {
@@ -96,7 +103,7 @@ function gameLoop(state: World) {
 
   for (const [id, note] of notes) {
     const engineNote = state.chart.notes.get(note.id)!;
-    const yPos = engineNote.ms - deltaTime + DELAY;
+    const yPos = engineNote.ms - deltaTime + delay;
     note.$el.style.top = `${yPos * NORMALIZE_CONSTANT}px`;
     if (!note.ticked && yPos < 0) {
       // playTick()
@@ -105,18 +112,19 @@ function gameLoop(state: World) {
 
     if (engineNote.hitAt) {
       note.$el.remove();
+      notes.delete(id)
     }
   }
 
   if (notes.size === 0) {
-    audio.pause();
+    audio!.pause();
     console.log("Finish");
     return;
   }
 
   // console.log(deltaTime)
   const newState = updateGameState(
-    { ...state, time: deltaTime + DELAY },
+    { ...state, time: deltaTime + delay },
     config
   );
 
@@ -129,7 +137,6 @@ function gameLoop(state: World) {
           `Could not judged note with id ${judgement.noteId}. This should never happen.`
         );
       }
-      console.log(note.code, note.timingWindowName, note.hitTiming);
     }
   }
 
@@ -148,20 +155,14 @@ function gameLoop(state: World) {
     // return
   }
 
-  window.world = newWorld
+  window.world = newWorld;
 
   // console.log('animate', state.time)
   frameCount++;
-  requestAnimationFrame(() => gameLoop(newWorld));
+  requestAnimationFrame(() =>
+    gameLoop(newWorld, { delay, startTime, playing, audio, frameCount, notes })
+  );
 }
-
-interface UINote {
-  id: string;
-  $el: HTMLDivElement;
-  ticked: boolean;
-}
-
-let audio: HTMLAudioElement;
 
 // https://stackoverflow.com/questions/35497243/how-to-make-a-short-beep-in-javascript-that-can-be-called-repeatedly-on-a-page
 const a = new AudioContext();
@@ -177,23 +178,66 @@ function k(gain: number, hz: number, ms: number) {
   v.stop(a.currentTime + ms * 0.0001);
 }
 
-let startTime: number;
-
 function playTick() {
   k(5, 1000, 200);
 }
 
-export function initializeAudio(song: Song, onCanPlayThrough?: () => void) {
-  audio = document.createElement("audio");
+export function initializeAudio(song: Song, onCanPlayThrough?: (audio: HTMLAudioElement) => void) {
+  const audio = document.createElement("audio");
   if (onCanPlayThrough) {
-    audio.addEventListener("canplaythrough", onCanPlayThrough);
+    audio.addEventListener("canplaythrough", () => {
+      onCanPlayThrough(audio)
+    });
   }
-  playing = false;
   audio.pause();
   audio.volume = 0.2;
   audio.currentTime = 0;
   audio.src = `http://localhost:5000/resources/${song.name}/song.mp3`;
 }
+
+function startGame({
+  chart,
+  song,
+  gameChart,
+  delay,
+  audio,
+  notes
+}: {
+  song: Song;
+  chart: Chart<string>;
+  gameChart: GameChart;
+  delay: number;
+  audio: HTMLAudioElement;
+  notes: Map<string, UINote>
+}) {
+  if (!audio) {
+    throw Error("audio element not found. Did you forget to initialize it?");
+  }
+
+  const END_BUFFER = 1000;
+  const endTime = timeOfLastNote(chart) + song.offset + END_BUFFER;
+
+  setTimeout(() => {
+    audio!.pause();
+    const summary = summarizeResults(window.world, windows);
+    emitter.emit("gameplay:done", { summary });
+  }, endTime);
+
+  audio.play();
+  const startTime = performance.now();
+  const world: World = {
+    inputs: [],
+    startTime,
+    time: startTime,
+    chart: gameChart,
+  };
+  initKeydownListener(startTime, delay);
+  window.requestAnimationFrame(() =>
+    gameLoop(world, { delay, startTime, playing: false, audio, frameCount: 0, notes })
+  );
+}
+
+export const noteClass = `bg-gray-300 absolute note rounded-lg is-note`;
 
 export function init({
   song,
@@ -202,9 +246,11 @@ export function init({
   song: Song;
   difficulty: Difficulty;
 }) {
+
+  const notes = new Map<string, UINote>();
+
   const chart = song.difficulties.find((x) => x.name === difficulty)!.chart;
   const gameChart = initGameState(chart);
-
   const gameNotes = Array.from(gameChart.notes).reduce<GameNote[]>(
     (acc, curr) => [...acc, curr[1]],
     []
@@ -222,39 +268,25 @@ export function init({
 
   for (const gameNote of gameNotes) {
     const $note = document.createElement("div");
-    $note.className = `bg-gray-300 absolute note rounded-lg`;
+    $note.className = noteClass
     $note.style.height = `calc(100vh / 50)`;
     cols.get(gameNote.code as Column)!.appendChild($note);
-    notes.set(gameNote.id, {
+    const note: UINote = {
       id: gameNote.id,
       $el: $note,
       ticked: false,
-    });
+    };
+    notes.set(gameNote.id, note);
   }
 
-  DELAY = song.offset
-
-  const startGame = () => {
-    const END_BUFFER = 1000
-    const endTime = timeOfLastNote(chart) + song.offset + END_BUFFER
-
-    setTimeout(() => {
-      audio.pause()
-      const summary = summarizeResults(window.world, windows)
-      emitter.emit('gameplay:done', { summary })
-    }, endTime)
-
-    audio.play()
-    startTime = performance.now();
-    const world: World = {
-      inputs: [],
-      startTime,
-      time: startTime,
-      chart: gameChart,
-    };
-    initKeydownListener(startTime);
-    window.requestAnimationFrame(() => gameLoop(world));
-  };
-
-  initializeAudio(song, startGame);
+  initializeAudio(song, (audio: HTMLAudioElement) => {
+    startGame({
+      song,
+      gameChart,
+      chart,
+      delay: song.offset,
+      audio,
+      notes
+    })
+  });
 }
