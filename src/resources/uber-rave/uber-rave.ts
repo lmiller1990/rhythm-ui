@@ -2,10 +2,10 @@ import type { Chart, ChartNote } from "@lmiller1990/rhythm-engine";
 
 const notes: ChartNote[] = []
 
-for (let i = 0; i < 5; i++) {
+for (let i = 0; i < 20; i++) {
   notes.push({
     id: i.toString(),
-    ms: i * 600,
+    ms: i * 300,
     code: (i % 2 === 0 ? 3 : 4).toString()
   })
 }

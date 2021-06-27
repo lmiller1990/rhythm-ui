@@ -2,18 +2,38 @@
   background: #E3E1E1;
 }
 
+:root {
+  --target-height: 40px;
+}
+
 .is-note {
   background: #C4C4C4;
   border-radius: 10px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.5);
   width: 100%;
-  height: 40px;
+  height: var(--target-height);
 }
 
 .is-target {
   background: white;
   border-radius: 10px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  height: 40px;
-  width: 40px;
+  height: var(--target-height);
+  width: 100%;
+}
+
+@keyframes target-hit {
+  0%   { 
+    width: 95%;
+    height: calc(var(--target-height) - 2px);
+  }
+
+  100% { 
+    width: 100%;
+    height: var(--target-height);
+  }
+}
+
+.target-hit {
+  animation: target-hit 0.15s;
 }

@@ -60,6 +60,18 @@ const NORMALIZE_CONSTANT = 1;
 const cols = new Map<Column, HTMLDivElement>();
 let inputs: Input[] = [];
 
+export function applyTargetHitAnim ($col: HTMLDivElement) {
+  console.log('Apply')
+  const className = "target-hit"
+  console.log($col)
+  const $el = $col.querySelector<HTMLDivElement>(`[data-game="target-el"]`)!
+  
+  $el.classList.remove(className);
+  setTimeout(() => {
+    $el.classList.add(className);
+  }, 0);
+}
+
 function initKeydownListener(startTime: number, delay: number) {
   window.addEventListener("keydown", (event: KeyboardEvent) => {
     const col = event.code as Key;
@@ -70,10 +82,7 @@ function initKeydownListener(startTime: number, delay: number) {
 
     const $col = cols.get(mapping[col])!;
 
-    $col.classList.remove("lane-flash");
-    setTimeout(() => {
-      $col.classList.add("lane-flash");
-    }, 0);
+    applyTargetHitAnim($col)
 
     inputs.push({
       ms: event.timeStamp - startTime - delay,
@@ -106,7 +115,7 @@ function gameLoop(state: World, { delay, startTime, playing, audio, notes, frame
     const yPos = engineNote.ms - deltaTime + delay;
     note.$el.style.top = `${yPos * NORMALIZE_CONSTANT}px`;
     if (!note.ticked && yPos < 0) {
-      // playTick()
+      playTick()
       note.ticked = true;
     }
 
@@ -152,13 +161,12 @@ function gameLoop(state: World, { delay, startTime, playing, audio, notes, frame
   }
 
   if (frameCount > 450) {
-    console.log('Done')
-    return
+    // console.log('Done')
+    // return
   }
 
   window.world = newWorld;
 
-  console.log('frames', frameCount)
   frameCount++;
   requestAnimationFrame(() =>
     gameLoop(newWorld, { delay, startTime, playing, audio, frameCount, notes })
@@ -166,33 +174,34 @@ function gameLoop(state: World, { delay, startTime, playing, audio, notes, frame
 }
 
 // https://stackoverflow.com/questions/35497243/how-to-make-a-short-beep-in-javascript-that-can-be-called-repeatedly-on-a-page
-// const a = new AudioContext();
-// function k(gain: number, hz: number, ms: number) {
-//   const v = a.createOscillator();
-//   const u = a.createGain();
-//   v.connect(u);
-//   v.frequency.value = hz;
-//   v.type = "square";
-//   u.connect(a.destination);
-//   u.gain.value = gain * 0.01;
-//   v.start(a.currentTime);
-//   v.stop(a.currentTime + ms * 0.0001);
-// }
+const a = new AudioContext();
+function k(gain: number, hz: number, ms: number) {
+  const v = a.createOscillator();
+  const u = a.createGain();
+  v.connect(u);
+  v.frequency.value = hz;
+  v.type = "square";
+  u.connect(a.destination);
+  u.gain.value = gain * 0.01;
+  v.start(a.currentTime);
+  v.stop(a.currentTime + ms * 0.0001);
+}
 
-// function playTick() {
-//   k(5, 1000, 200);
-// }
+function playTick() {
+  // k(5, 1000, 200);
+}
 
 export function initializeAudio(song: Song, onCanPlayThrough?: (audio: HTMLAudioElement) => void) {
   const audio = document.createElement("audio");
-  if (onCanPlayThrough) {
-    audio.addEventListener("canplaythrough", () => {
-      onCanPlayThrough(audio)
-    });
-  }
   audio.pause();
   audio.volume = 0.2;
   audio.currentTime = 0;
+  if (onCanPlayThrough) {
+    audio.addEventListener("canplaythrough", () => {
+      console.log('Can play through')
+      onCanPlayThrough(audio)
+    });
+  }
   audio.src = `http://localhost:5000/resources/${song.name}/song.mp3`;
 }
 
@@ -221,7 +230,7 @@ function startGame({
   setTimeout(() => {
     audio!.pause();
     const summary = summarizeResults(window.world, windows);
-    // emitter.emit("gameplay:done", { summary });
+    emitter.emit("gameplay:done", { summary });
   }, endTime);
 
   audio.play();
@@ -239,7 +248,7 @@ function startGame({
 }
 
 export const noteClass = `absolute note is-note`;
-export const targetClass = `absolute is-target`;
+export const targetClass = `is-target`;
 
 export function init({
   song,

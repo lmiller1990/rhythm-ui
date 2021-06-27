@@ -1,18 +1,15 @@
-import { noteClass, targetClass } from './gameplay'
+import { noteClass, targetClass, applyTargetHitAnim } from './gameplay'
 import 'virtual:windi.css'
 import './gameplay.css'
 
-function mount(className: string) {
+const div = () => document.createElement('div')
+
+function mount(child: HTMLDivElement) {
   const id = '__cy_root'
-  const el = document.createElement('div')
-  el.style.height = '40px'
-  el.style.width = '40px'
-  el.className = className
   const wrapper = document.getElementById(id)!
-  wrapper.style.padding = '10px'
   wrapper.style.height = '100vh'
   wrapper.className = 'background'
-  wrapper.appendChild(el)
+  wrapper.appendChild(child)
 }
 
 function classify(className: string) {
@@ -20,11 +17,27 @@ function classify(className: string) {
 }
 
 xit('renders a note', () => {
-  mount(noteClass)
+  const el = div()
+  el.className = noteClass
+  mount(el)
   cy.get(classify(noteClass))
 })
 
 it('renders a target', () => {
-  mount(targetClass)
+  const el = div()
+  el.dataset.dataGame = 'col-1'
+  el.className = targetClass
+
+  const wrap = div()
+  wrap.style.width = '40px'
+  wrap.style.position = 'relative'
+  wrap.appendChild(el)
+
+  mount(wrap)
+
   cy.get(classify(targetClass))
+
+  window.addEventListener('keydown', (event: KeyboardEvent) => {
+    applyTargetHitAnim(el) 
+  })
 })

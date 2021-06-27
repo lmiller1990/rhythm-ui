@@ -9,15 +9,15 @@
       >
         <div 
           v-for="lane of lanes" 
-          class="relative"
-          :class="targetClass"
+          class="relative is-column-container flex justify-center"
           :key="lane"
           :data-game="`col-${lane}`" 
         >
-          <!-- <div 
-            class="absolute" 
-            :class="noteClass"
-          /> -->
+          <div 
+            :class="targetClass" 
+            data-game="target-el"
+          />
+          <!-- notes here -->
         </div>
       </div>
     </div>
@@ -66,6 +66,7 @@ export default defineComponent({
 #lanes {
   width: 350px;
   height: calc(90vh);
+  grid-gap: 4px;
 }
 </style>
 
