@@ -1,11 +1,11 @@
 import { chart } from './uber-rave'
 import { Song } from '../../types'
 
-export const uberRave: Song = {
-  id: '1',
-  displayName: 'Uber Rave',
-  name: 'uber-rave',
-  bpm: 175,
+export const drums: Song = {
+  id: '2',
+  displayName: '100 BPM Drums',
+  name: '100-bpm-drums',
+  bpm: 100,
   offset: 5250,
   artist: 'Some artist',
   durationInSec: 110,

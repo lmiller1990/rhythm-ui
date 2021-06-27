@@ -1,4 +1,20 @@
-import { Song } from './types'
-import { uberRave } from './resources/uber-rave'
+import { Song } from "./types";
+import { uberRave } from "./resources/uber-rave";
+import { drums } from "./resources/100-bpm-drums";
 
-export const songs: Song[] = Array(20).fill(uberRave).map((song, idx) => ({...song, id: (idx + 1).toString() }))
+const createFiller = (num: number): Song[] =>
+  Array(num)
+    .fill(uberRave)
+    .map<Song>((song, idx) => ({
+      ...song,
+      name: "N/A",
+      displayName: "N/A",
+      id: (Math.random() * 10000).toFixed(0)
+    }));
+
+export const songs: Song[] = [
+  ...createFiller(5),
+  uberRave,
+  drums,
+  ...createFiller(17),
+];
