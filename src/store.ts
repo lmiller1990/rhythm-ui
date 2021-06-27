@@ -62,8 +62,6 @@ class Store {
   }
 
   get selectedSong() {
-    return uberRave;
-
     if (!this.state.songs.selectedId) {
       return;
     }
