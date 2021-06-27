@@ -1,6 +1,6 @@
 <template>
   <a href="/">Back</a>
-  <div class="bg-gray-800 h-screen flex justify-center items-end" id="game-container">
+  <div class="h-screen flex justify-center items-end background" id="game-container">
     <div class="flex justify-center">
       <div 
         v-once 
@@ -9,10 +9,15 @@
       >
         <div 
           v-for="lane of lanes" 
-          class="bg-gray-600 target relative note rounded-lg"
+          class="relative"
+          :class="targetClass"
+          :key="lane"
           :data-game="`col-${lane}`" 
         >
-          <div class="target absolute note rounded-lg border border-2 " />
+          <!-- <div 
+            class="absolute" 
+            :class="noteClass"
+          /> -->
         </div>
       </div>
     </div>
@@ -23,7 +28,7 @@
 import { defineComponent, onBeforeUnmount, onMounted } from 'vue';
 import { Summary } from '@lmiller1990/rhythm-engine'
 import { useRouter } from 'vue-router'
-import { init, emitter } from './gameplay'
+import { init, emitter, noteClass, targetClass } from './gameplay'
 import { useStore } from './store';
 
 export default defineComponent({
@@ -49,7 +54,9 @@ export default defineComponent({
     })
 
     return {
-      lanes
+      lanes,
+      noteClass,
+      targetClass
     }
   }
 })
@@ -60,29 +67,6 @@ export default defineComponent({
   width: 350px;
   height: calc(90vh);
 }
-
-.target {
-  height: calc(100vh / 50);
-}
-
 </style>
 
-<style>
-.note {
-  width: 100%;
-}
-
-@keyframes lane-flash {
-  0%   { 
-    opacity: 0.75;
-  }
-  100% { 
-    opacity: 1;
-  }
-}
-
-.lane-flash {
-  animation: lane-flash 0.5s;
-}
-
-</style>
+<style src="./gameplay.css"></style>

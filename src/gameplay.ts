@@ -151,13 +151,14 @@ function gameLoop(state: World, { delay, startTime, playing, audio, notes, frame
     inputs = [];
   }
 
-  if (frameCount > 10) {
-    // return
+  if (frameCount > 450) {
+    console.log('Done')
+    return
   }
 
   window.world = newWorld;
 
-  // console.log('animate', state.time)
+  console.log('frames', frameCount)
   frameCount++;
   requestAnimationFrame(() =>
     gameLoop(newWorld, { delay, startTime, playing, audio, frameCount, notes })
@@ -165,22 +166,22 @@ function gameLoop(state: World, { delay, startTime, playing, audio, notes, frame
 }
 
 // https://stackoverflow.com/questions/35497243/how-to-make-a-short-beep-in-javascript-that-can-be-called-repeatedly-on-a-page
-const a = new AudioContext();
-function k(gain: number, hz: number, ms: number) {
-  const v = a.createOscillator();
-  const u = a.createGain();
-  v.connect(u);
-  v.frequency.value = hz;
-  v.type = "square";
-  u.connect(a.destination);
-  u.gain.value = gain * 0.01;
-  v.start(a.currentTime);
-  v.stop(a.currentTime + ms * 0.0001);
-}
+// const a = new AudioContext();
+// function k(gain: number, hz: number, ms: number) {
+//   const v = a.createOscillator();
+//   const u = a.createGain();
+//   v.connect(u);
+//   v.frequency.value = hz;
+//   v.type = "square";
+//   u.connect(a.destination);
+//   u.gain.value = gain * 0.01;
+//   v.start(a.currentTime);
+//   v.stop(a.currentTime + ms * 0.0001);
+// }
 
-function playTick() {
-  k(5, 1000, 200);
-}
+// function playTick() {
+//   k(5, 1000, 200);
+// }
 
 export function initializeAudio(song: Song, onCanPlayThrough?: (audio: HTMLAudioElement) => void) {
   const audio = document.createElement("audio");
@@ -220,7 +221,7 @@ function startGame({
   setTimeout(() => {
     audio!.pause();
     const summary = summarizeResults(window.world, windows);
-    emitter.emit("gameplay:done", { summary });
+    // emitter.emit("gameplay:done", { summary });
   }, endTime);
 
   audio.play();
@@ -237,7 +238,8 @@ function startGame({
   );
 }
 
-export const noteClass = `bg-gray-300 absolute note rounded-lg is-note`;
+export const noteClass = `absolute note is-note`;
+export const targetClass = `absolute is-target`;
 
 export function init({
   song,
@@ -269,7 +271,6 @@ export function init({
   for (const gameNote of gameNotes) {
     const $note = document.createElement("div");
     $note.className = noteClass
-    $note.style.height = `calc(100vh / 50)`;
     cols.get(gameNote.code as Column)!.appendChild($note);
     const note: UINote = {
       id: gameNote.id,
