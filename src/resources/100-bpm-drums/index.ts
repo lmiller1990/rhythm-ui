@@ -1,4 +1,4 @@
-import { chart } from './uber-rave'
+import { chart } from './100-bpm-drums'
 import { Song } from '../../types'
 
 export const drums: Song = {
