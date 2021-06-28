@@ -36,23 +36,27 @@ const config: EngineConfiguration = {
   ],
 };
 
+const PRE_SONG_DELAY = 2000
+const END_BUFFER = 1000
+
 type Column = "1" | "2" | "3" | "4" | "5" | "6";
 
-type Key = "KeyA" | "KeyS" | "KeyD" | "KeyL" | "Semicolon" | "Quote";
+type Key = "KeyA" | "KeyS" | "KeyD" | "KeyF" | "KeyG" | "KeyH";
 
 interface UINote {
   id: string;
   $el: HTMLDivElement;
   ticked: boolean;
+  drawn: boolean;
 }
 
 const mapping: Record<Key, Column> = {
   KeyA: "1",
   KeyS: "2",
   KeyD: "3",
-  KeyL: "4",
-  Semicolon: "5",
-  Quote: "6",
+  KeyF: "4",
+  KeyG: "5",
+  KeyH: "6",
 };
 
 const NORMALIZE_CONSTANT = 1;
@@ -100,11 +104,15 @@ interface GameplayMeta {
   frameCount: number
 }
 
+let framesSinceLastDebugUpdate = 0
+const viewportHeight = window.innerHeight
+
 function gameLoop(state: World, { delay, startTime, playing, audio, notes, frameCount }: GameplayMeta) {
   const frameTime = performance.now();
 
-  if (!playing && frameTime - startTime) {
-    // audio.play();
+  if (!playing && (frameTime - startTime > PRE_SONG_DELAY)) {
+    framesSinceLastDebugUpdate = frameCount
+    audio.play();
     playing = true;
   }
 
@@ -113,13 +121,22 @@ function gameLoop(state: World, { delay, startTime, playing, audio, notes, frame
   for (const [id, note] of notes) {
     const engineNote = state.chart.notes.get(note.id)!;
     const yPos = engineNote.ms - deltaTime + delay;
-    note.$el.style.top = `${yPos * NORMALIZE_CONSTANT}px`;
-    if (!note.ticked && yPos < 0) {
-      playTick()
-      note.ticked = true;
+    const yPosConsideringSpeedMod = yPos * NORMALIZE_CONSTANT
+
+    if (yPos < viewportHeight && !engineNote.hitAt) {
+      note.$el.style.top = `${yPosConsideringSpeedMod}px`;
+      if (!note.drawn) {
+        cols.get(engineNote.code as Column)!.appendChild(note.$el);
+        note.drawn = true
+      }
     }
 
-    if (engineNote.hitAt) {
+    // if (!note.ticked && yPos < 0) {
+    //   playTick()
+    //   note.ticked = true;
+    // }
+
+    if (engineNote.hitAt || yPos < -200) {
       note.$el.remove();
       notes.delete(id)
     }
@@ -168,6 +185,13 @@ function gameLoop(state: World, { delay, startTime, playing, audio, notes, frame
   window.world = newWorld;
 
   frameCount++;
+
+console.log(frameCount, framesSinceLastDebugUpdate)
+  if (frameCount - framesSinceLastDebugUpdate > 60) {
+    const noteCount = document.querySelectorAll('.is-note').length
+    document.querySelector<HTMLTableDataCellElement>('#debug-notes')!.textContent = noteCount.toString() || 'N/A'
+    framesSinceLastDebugUpdate = framesSinceLastDebugUpdate
+  }
   requestAnimationFrame(() =>
     gameLoop(newWorld, { delay, startTime, playing, audio, frameCount, notes })
   );
@@ -224,8 +248,7 @@ function startGame({
     throw Error("audio element not found. Did you forget to initialize it?");
   }
 
-  const END_BUFFER = 1000;
-  const endTime = timeOfLastNote(chart) + song.offset + END_BUFFER;
+  const endTime = timeOfLastNote(chart) + song.offset + END_BUFFER + PRE_SONG_DELAY;
 
   setTimeout(() => {
     audio!.pause();
@@ -233,7 +256,7 @@ function startGame({
     emitter.emit("gameplay:done", { summary });
   }, endTime);
 
-  audio.play();
+  // audio.play();
   const startTime = performance.now();
   const world: World = {
     inputs: [],
@@ -261,7 +284,18 @@ export function init({
   const notes = new Map<string, UINote>();
 
   const chart = song.difficulties.find((x) => x.name === difficulty)!.chart;
-  const gameChart = initGameState(chart);
+  const gameChart = initGameState({
+    ...chart,
+    notes: chart.notes.map((x) => {
+      // const code = (parseInt(x.code) - 1).toString()
+      // console.log(code)
+      return {
+        ...x,
+        ms: x.ms + PRE_SONG_DELAY,
+        // code 
+      };
+    }),
+  });
   const gameNotes = Array.from(gameChart.notes).reduce<GameNote[]>(
     (acc, curr) => [...acc, curr[1]],
     []
@@ -280,10 +314,11 @@ export function init({
   for (const gameNote of gameNotes) {
     const $note = document.createElement("div");
     $note.className = noteClass
-    cols.get(gameNote.code as Column)!.appendChild($note);
+    // cols.get(gameNote.code as Column)!.appendChild($note);
     const note: UINote = {
       id: gameNote.id,
       $el: $note,
+      drawn: false,
       ticked: false,
     };
     notes.set(gameNote.id, note);

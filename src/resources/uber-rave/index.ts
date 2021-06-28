@@ -6,7 +6,7 @@ export const uberRave: Song = {
   displayName: 'Uber Rave',
   name: 'uber-rave',
   bpm: 175,
-  offset: 0,
+  offset: 50,
   artist: 'Some artist',
   durationInSec: 110,
   difficulties: [

@@ -1,6 +1,16 @@
 <template>
   <a href="/">Back</a>
   <div class="h-screen flex justify-center items-end background" id="game-container">
+    <div id="debug" v-once>
+
+      <table>
+        <tr>
+          <th>Notes:</th>
+          <td id="debug-notes" />
+        </tr>
+      </table> 
+
+    </div>
     <div class="flex justify-center">
       <div 
         v-once 
@@ -67,6 +77,12 @@ export default defineComponent({
   width: 350px;
   height: calc(90vh);
   grid-gap: 4px;
+}
+
+#debug {
+  position: absolute;
+  top: 25px;
+  left: 0;
 }
 </style>
 
