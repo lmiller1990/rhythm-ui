@@ -16,6 +16,9 @@ describe("Gameplay", () => {
     }
 
     mount(Gameplay, {
+      props: {
+        initGameplay: false
+      },
       global: {
         provide: {
           [sym]: createStore({ ...state }),

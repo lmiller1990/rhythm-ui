@@ -1,9 +1,21 @@
+#lanes {
+  width: 450px;
+  height: calc(90vh);
+  grid-gap: 4px;
+}
+
+#debug {
+  position: absolute;
+  top: 25px;
+  left: 0;
+}
+
 .background {
   background: #E3E1E1;
 }
 
 :root {
-  --target-height: 40px;
+  --target-height: 60px;
 }
 
 .is-note {

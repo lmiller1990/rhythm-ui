@@ -42,12 +42,23 @@ import { init, emitter, noteClass, targetClass } from './gameplay'
 import { useStore } from './store';
 
 export default defineComponent({
-  setup() {
+  props: {
+    initGameplay: {
+      type: Boolean,
+      default: true
+    }
+  },
+
+  setup(props) {
     const lanes = [1, 2, 3, 4, 5, 6]
     const store = useStore()
     const router = useRouter()
 
     onMounted(() => {
+      if (!props.initGameplay) {
+        return
+      }
+
       init({
         song: store.selectedSong!,
         difficulty: 'hard',
@@ -71,19 +82,5 @@ export default defineComponent({
   }
 })
 </script>
-
-<style scoped>
-#lanes {
-  width: 350px;
-  height: calc(90vh);
-  grid-gap: 4px;
-}
-
-#debug {
-  position: absolute;
-  top: 25px;
-  left: 0;
-}
-</style>
 
 <style src="./gameplay.css"></style>
