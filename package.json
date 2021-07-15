@@ -1,13 +1,25 @@
 {
-  "version": "0.0.0",
+  "name": "electron-vite-tailwind-starter",
+  "version": "0.7.0",
+  "author": "Grzegorz Leoniec",
+  "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "static": "serve -p 5000 src/"
+    "dev": "run-p dev:*",
+    "dev:vite": "vite",
+    "dev:electron": "electron src/main/index.ts",
+    "build": "run-s build:*",
+    "static": "serve -p 5000 src/renderer",
+    "build:vite": "vite build --base=./",
+    "build:electron": "electron-builder build",
+    "postinstall": "install-app-deps"
   },
   "dependencies": {
+    "electron-context-menu": "^3.0.0",
+    "electron-ipc-proxy": "^2.1.0",
     "events": "^3.3.0",
-    "vue": "^3.0.5",
+    "electron-window-state": "^5.0.3",
+    "lodash-es": "^4.17.21",
+    "vue": "^3.0.11",
     "vue-router": "^4.0.8"
   },
   "devDependencies": {
@@ -15,14 +27,49 @@
     "@cypress/vue": "^3.0.0-beta.1",
     "@lmiller1990/rhythm-engine": "^0.0.4",
     "@types/events": "^3.0.0",
-    "@vitejs/plugin-vue": "^1.2.3",
-    "@vue/compiler-sfc": "^3.0.5",
+    "@vitejs/plugin-vue": "^1.2.2",
+    "@vue/compiler-sfc": "^3.0.11",
+    "autoprefixer": "^10.2.5",
     "cypress": "^7.6.0",
+    "electron": "^12.0.6",
+    "electron-builder": "^22.10.5",
+    "electron-reloader": "^1.2.1",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.2.13",
     "serve": "^11.3.2",
+    "tailwindcss": "^2.1.2",
     "typescript": "^4.3.2",
-    "vite": "2.3.5",
-    "vite-plugin-windicss": "^0.17.0",
-    "vue-router-mock": "^0.0.3",
-    "windicss": "^3.0.12"
+    "vite": "^2.2.4",
+    "vue-router-mock": "^0.0.3"
+  },
+  "peerDependencies": {
+    "postcss": "^8.2.13"
+  },
+  "keywords": [
+    "electron",
+    "vue",
+    "vite",
+    "tailwind"
+  ],
+  "main": "src/main/index.ts",
+  "resolutions": {
+    "postcss": "^8.2.13"
+  },
+  "build": {
+    "directories": {
+      "output": "build"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "files": [
+      "src/main/index.ts",
+      "src/main",
+      "src/renderer",
+      "splashscreen.html",
+      "dist",
+      "tailwind.config.js",
+      "package.json"
+    ]
   }
 }

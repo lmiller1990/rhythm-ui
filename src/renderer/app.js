@@ -1,9 +1,8 @@
 import { createApp } from 'vue'
-import 'virtual:windi.css'
+import App from '~/App.vue'
+import '~/assets/css/index.css'
 import { store } from './store'
 import { router } from './router'
-
-import App from './App.vue'
 
 createApp(App)
   .use(router)
