@@ -1,32 +1,26 @@
 <template>
-  <a href="/">Back</a>
-  <div class="h-screen flex justify-center items-end background" id="game-container">
+  <div
+    class="h-screen flex justify-center items-end background"
+    id="game-container"
+  >
     <div id="debug" v-once>
-
+      <a href="/">Back</a>
       <table>
         <tr>
           <th>Notes:</th>
           <td id="debug-notes" />
         </tr>
-      </table> 
-
+      </table>
     </div>
     <div class="flex justify-center">
-      <div 
-        v-once 
-        id="lanes" 
-        class="relative grid grid-cols-6"
-      >
-        <div 
-          v-for="lane of lanes" 
+      <div v-once id="lanes" class="relative grid grid-cols-6">
+        <div
+          v-for="lane of lanes"
           class="relative is-column-container flex justify-center"
           :key="lane"
-          :data-game="`col-${lane}`" 
+          :data-game="`col-${lane}`"
         >
-          <div 
-            :class="targetClass" 
-            data-game="target-el"
-          />
+          <div :class="targetClass" data-game="target-el" />
           <!-- notes here -->
         </div>
       </div>
@@ -35,18 +29,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted } from 'vue';
+import { defineComponent, onBeforeUnmount, onMounted } from 'vue'
 import { Summary } from '@lmiller1990/rhythm-engine'
 import { useRouter } from 'vue-router'
 import { init, emitter, noteClass, targetClass } from './gameplay'
-import { useStore } from './store';
+import { useStore } from './store'
 
 export default defineComponent({
   props: {
     initGameplay: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
 
   setup(props) {
@@ -77,9 +71,9 @@ export default defineComponent({
     return {
       lanes,
       noteClass,
-      targetClass
+      targetClass,
     }
-  }
+  },
 })
 </script>
 

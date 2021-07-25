@@ -1,18 +1,18 @@
 <template>
   <div class="absolute" :style="style">
-    <pulse 
-      :style="currentSongStyle" 
+    <pulse
+      :style="currentSongStyle"
       class="absolute bg-gray-100 opacity-20"
       :pulse="focused"
-      ref="currentSongRef" 
+      ref="currentSongRef"
     />
 
     <transition-group name="cell" tag="div">
-      <div 
+      <div
         v-for="(song, idx) of songList"
         :key="song.id"
         class="bg-gray-800 text-white p-4 relative"
-        :style="{ zIndex: idx === songList.length - 1 ? 1 : 10  }"
+        :style="{ zIndex: idx === songList.length - 1 ? 1 : 10 }"
         ref="songItemRef"
       >
         <label class="text-3xl">
@@ -57,7 +57,7 @@ export function reorderList<T>(
 
 export default defineComponent({
   components: {
-    Pulse
+    Pulse,
   },
 
   setup() {
@@ -76,7 +76,6 @@ export default defineComponent({
       return menuState.focused.value === 'song-wheel'
     })
 
-
     watchEffect(() => {
       const currentSong = songList.value[selectedSongOffset]
       store.setCurrentSongId(currentSong.id)
@@ -86,14 +85,14 @@ export default defineComponent({
       if (!currentSongRef.value || !songItemRef.value) {
         return
       }
-      
+
       const songRect = songItemRef.value.getBoundingClientRect()
 
       return {
         top: `${songRect.height * selectedSongOffset}px`,
         height: `${songRect.height}px`,
         width: `${songSelectWidth}px`,
-        zIndex: 100
+        zIndex: 100,
       }
     })
 
@@ -104,7 +103,7 @@ export default defineComponent({
 
       return {
         top: `-${songItemRef.value.getBoundingClientRect().height}px`,
-        width: `${songSelectWidth}px`
+        width: `${songSelectWidth}px`,
       }
     })
 
@@ -150,14 +149,14 @@ export default defineComponent({
       songList,
       next,
       prev,
-      focused
+      focused,
     }
-  }
+  },
 })
 </script>
 
 <style scoped>
 .cell-move {
   transition: transform 0.2s ease;
-} 
+}
 </style>
