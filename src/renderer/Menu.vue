@@ -2,10 +2,7 @@
   <div class="relative">
     <select-song />
     <div class="absolute p-5" id="song-info" :style="style">
-      <song-info 
-        v-if="selectedSong"
-        :song="selectedSong"
-      />
+      <song-info v-if="selectedSong" :song="selectedSong" />
     </div>
   </div>
 </template>
@@ -20,7 +17,7 @@ import SongInfo from './views/SongInfo.vue'
 export default defineComponent({
   components: {
     SelectSong,
-    SongInfo
+    SongInfo,
   },
 
   setup() {
@@ -29,16 +26,15 @@ export default defineComponent({
 
     const style = computed(() => {
       return {
-        width: `calc(100% - ${songSelectWidth}px)`
+        width: `calc(100% - ${songSelectWidth}px)`,
       }
     })
 
-
     return {
       selectedSong,
-      style
+      style,
     }
-  }
+  },
 })
 </script>
 

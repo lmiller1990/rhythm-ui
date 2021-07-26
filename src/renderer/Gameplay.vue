@@ -11,6 +11,7 @@
           <td id="debug-notes" />
         </tr>
       </table>
+      <div id="fps"></div>
     </div>
     <div class="flex justify-center">
       <div v-once id="lanes" class="relative grid grid-cols-6">
@@ -33,6 +34,7 @@ import { defineComponent, onBeforeUnmount, onMounted } from 'vue'
 import { Summary } from '@lmiller1990/rhythm-engine'
 import { useRouter } from 'vue-router'
 import { init, emitter, noteClass, targetClass } from './gameplay'
+import { refreshLoop } from './debugging'
 import { useStore } from './store'
 
 export default defineComponent({
@@ -49,6 +51,8 @@ export default defineComponent({
     const router = useRouter()
 
     onMounted(() => {
+      refreshLoop(document.querySelector('#fps'))
+
       if (!props.initGameplay) {
         return
       }

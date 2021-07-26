@@ -1,5 +1,5 @@
-const createWindow = require('./helpers/create-window.js')
-const { app } = require('electron')
+const { createWindow, width, height } = require('./helpers/create-window.js')
+const { app, BrowserWindow } = require('electron')
 const contextMenu = require('electron-context-menu')
 
 const resolveConfig = require('tailwindcss/resolveConfig')
@@ -8,7 +8,9 @@ const fullTailwindConfig = resolveConfig(tailwindConfig)
 
 try {
   require('electron-reloader')(module)
-} catch { }
+} catch {}
+
+app.disableHardwareAcceleration()
 
 contextMenu({
   showSearchWithGoogle: false,
@@ -36,9 +38,10 @@ function loadVitePage(port) {
 
 function createMainWindow() {
   mainWindow = createWindow('main', {
-    backgroundColor: fullTailwindConfig.theme.colors.primary[800],
+    backgroundColor: fullTailwindConfig.theme.colors.primary[500],
     show: false,
   })
+  mainWindow.setSize(width, height)
   mainWindow.once('close', () => {
     mainWindow = null
   })

@@ -3,15 +3,23 @@ const windowStateKeeper = require('electron-window-state')
 
 const isProd = app.isPackaged
 
-module.exports = function createWindow(windowName = 'main', options = {}) {
+const width = 1024
+const height = 768
+
+module.exports = {
+  width,
+  height
+}
+
+module.exports.createWindow = (windowName = 'main', options = {}) => {
   const winOptions = {
-    minWidth: 1024,
+    minWidth: width,
     minHeight: 768,
     titleBarStyle: 'hidden',
     autoHideMenuBar: true,
     trafficLightPosition: {
-      x: 20,
-      y: 32,
+      x: width - 64,
+      y: 24,
     },
     ...options,
     webPreferences: {
@@ -37,6 +45,7 @@ module.exports = function createWindow(windowName = 'main', options = {}) {
     width: windowState.width,
     height: windowState.height,
   })
+  win.webContents.setFrameRate(240)
   windowState.manage(win)
 
   // disabled as we now do it explicitly white hiding the splash screen
