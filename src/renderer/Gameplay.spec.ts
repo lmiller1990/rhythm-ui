@@ -1,31 +1,31 @@
-import { mount } from "@cypress/vue";
-import Gameplay from "./Gameplay.vue";
-import { sym, createStore, createInitState } from "./store";
+import { mount } from '@cypress/vue'
+import Gameplay from './Gameplay.vue'
+import { sym, createStore, createInitState } from './store'
 import { routerKey } from 'vue-router'
-import 'virtual:windi.css'
+import 'tailwindcss/dist/tailwind.css'
 
-describe("Gameplay", () => {
-  const state = createInitState();
+describe('Gameplay', () => {
+  const state = createInitState()
   before(() => {
     cy.viewport(1600, 900)
   })
 
-  it("retursn to / when pressing enter", () => {
+  it('retursn to / when pressing enter', () => {
     const mockRouter = {
-      push: cy.stub()
+      push: cy.stub(),
     }
 
     mount(Gameplay, {
       props: {
-        initGameplay: false
+        initGameplay: false,
       },
       global: {
         provide: {
           [sym]: createStore({ ...state }),
           // @ts-ignore - TS Bug.
-          [routerKey]: mockRouter
+          [routerKey]: mockRouter,
         },
       },
-    });
-  });
-});
+    })
+  })
+})

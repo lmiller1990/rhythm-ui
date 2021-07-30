@@ -1,5 +1,5 @@
 import { noteClass, targetClass, applyTargetHitAnim } from './gameplay'
-import 'virtual:windi.css'
+import 'tailwindcss/dist/tailwind.css'
 import './gameplay.css'
 
 const div = () => document.createElement('div')
@@ -38,6 +38,6 @@ it('renders a target', () => {
   cy.get(classify(targetClass))
 
   window.addEventListener('keydown', (event: KeyboardEvent) => {
-    applyTargetHitAnim(el) 
+    applyTargetHitAnim(el)
   })
 })
