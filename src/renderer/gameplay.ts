@@ -64,10 +64,7 @@ const NORMALIZE_CONSTANT = 1
 const cols = new Map<Column, HTMLDivElement>()
 let inputs: Input[] = []
 
-export function applyTargetHitAnim($col: HTMLDivElement) {
-  console.log('Apply')
-  const className = 'target-hit'
-  console.log($col)
+export function applyAnimation($col: HTMLDivElement, className: string) {
   const $el = $col.querySelector<HTMLDivElement>(`[data-game="target-el"]`)!
 
   $el.classList.remove(className)
@@ -78,6 +75,7 @@ export function applyTargetHitAnim($col: HTMLDivElement) {
 
 function initKeydownListener(startTime: number, delay: number) {
   window.addEventListener('keydown', (event: KeyboardEvent) => {
+    console.log('Keydown')
     const col = event.code as Key
     const code = mapping[col]
     if (!code) {
@@ -86,7 +84,7 @@ function initKeydownListener(startTime: number, delay: number) {
 
     const $col = cols.get(mapping[col])!
 
-    applyTargetHitAnim($col)
+    applyAnimation($col, 'target-hit')
 
     inputs.push({
       ms: event.timeStamp - startTime - delay,
@@ -107,6 +105,10 @@ interface GameplayMeta {
 let framesSinceLastDebugUpdate = 0
 const viewportHeight = window.innerHeight
 
+// get current time
+// update note UI
+// remove stale notes from DOM
+// see if we have finished the song
 function gameLoop(
   state: World,
   { delay, startTime, playing, audio, notes, frameCount }: GameplayMeta
@@ -173,23 +175,18 @@ function gameLoop(
     ...state,
     chart: newState.chart,
     time: frameTime,
-    inputs,
+    inputs: [...inputs],
   }
 
   if (inputs.length) {
     inputs = []
   }
 
-  if (frameCount > 450) {
-    // console.log('Done')
-    // return
-  }
-
   window.world = newWorld
 
   frameCount++
 
-  console.log(frameCount, framesSinceLastDebugUpdate)
+  // console.log(frameCount, framesSinceLastDebugUpdate)
   if (frameCount - framesSinceLastDebugUpdate > 60) {
     const noteCount = document.querySelectorAll('.is-note').length
     document.querySelector<HTMLTableDataCellElement>(
