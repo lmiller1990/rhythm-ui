@@ -73,8 +73,8 @@ export function applyAnimation($col: HTMLDivElement, className: string) {
   }, 0)
 }
 
-function initKeydownListener(startTime: number, delay: number) {
-  window.addEventListener('keydown', (event: KeyboardEvent) => {
+const handleKeydown =
+  (event: KeyboardEvent) => (startTime: number, delay: number) => {
     console.log('Keydown')
     const col = event.code as Key
     const code = mapping[col]
@@ -90,7 +90,12 @@ function initKeydownListener(startTime: number, delay: number) {
       ms: event.timeStamp - startTime - delay,
       code,
     })
-  })
+  }
+
+function initKeydownListener(startTime: number, delay: number) {
+  window.addEventListener('keydown', (event) =>
+    handleKeydown(event)(startTime, delay)
+  )
 }
 
 interface GameplayMeta {
@@ -162,6 +167,7 @@ function gameLoop(
   if (newState.previousFrameMeta.judgementResults.length) {
     // some notes were judged on the previous window
     for (const judgement of newState.previousFrameMeta.judgementResults) {
+      console.log(judgement)
       const note = newState.chart.notes.get(judgement.noteId)
       if (!note) {
         throw Error(
@@ -259,6 +265,7 @@ function startGame({
 
   setTimeout(() => {
     audio!.pause()
+    window.removeEventListener('keydown', handleKeydown)
     const summary = summarizeResults(window.world, windows)
     emitter.emit('gameplay:done', { summary })
   }, endTime)
