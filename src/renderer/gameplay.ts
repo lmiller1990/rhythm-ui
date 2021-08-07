@@ -284,7 +284,8 @@ function startGame({
   )
 }
 
-export const noteClass = `absolute note is-note`
+export const noteClassBase = `rounded-md is-note`
+export const noteClass = `absolute ${noteClassBase}`
 export const targetClass = `is-target`
 
 export function init({
@@ -300,15 +301,13 @@ export function init({
   const gameChart = initGameState({
     ...chart,
     notes: chart.notes.map((x) => {
-      // const code = (parseInt(x.code) - 1).toString()
-      // console.log(code)
       return {
         ...x,
         ms: x.ms + PRE_SONG_DELAY,
-        // code
       }
     }),
   })
+
   const gameNotes = Array.from(gameChart.notes).reduce<GameNote[]>(
     (acc, curr) => [...acc, curr[1]],
     []
@@ -326,7 +325,7 @@ export function init({
 
   for (const gameNote of gameNotes) {
     const $note = document.createElement('div')
-    $note.className = noteClass
+    $note.className = `${noteClass} is-note-${gameNote.code}`
     // cols.get(gameNote.code as Column)!.appendChild($note);
     const note: UINote = {
       id: gameNote.id,

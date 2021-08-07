@@ -38,7 +38,6 @@ function loadVitePage(port) {
 
 function createMainWindow() {
   mainWindow = createWindow('main', {
-    backgroundColor: fullTailwindConfig.theme.colors.primary[500],
     show: false,
   })
   mainWindow.setSize(width, height)

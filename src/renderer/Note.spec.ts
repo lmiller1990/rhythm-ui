@@ -1,4 +1,4 @@
-import { noteClass, targetClass, applyTargetHitAnim } from './gameplay'
+import { noteClass, noteClassBase } from './gameplay'
 import 'tailwindcss/dist/tailwind.css'
 import './gameplay.css'
 
@@ -8,36 +8,19 @@ function mount(child: HTMLDivElement) {
   const id = '__cy_root'
   const wrapper = document.getElementById(id)!
   wrapper.style.height = '100vh'
-  wrapper.className = 'background'
+  wrapper.className = 'background flex justify-around'
   wrapper.appendChild(child)
 }
 
-function classify(className: string) {
-  return `.${className.replaceAll(' ', '.')}`
-}
+it('renders notes', () => {
+  const notes: HTMLDivElement[] = []
+  for (let i = 0; i < 6; i++) {
+    const note = div()
+    note.className = `${noteClassBase} is-note-${i + 1}`
+    note.style.width = `var(--target-height)`
+    note.style.height = `var(--target-height)`
+    notes.push(note)
+  }
 
-xit('renders a note', () => {
-  const el = div()
-  el.className = noteClass
-  mount(el)
-  cy.get(classify(noteClass))
-})
-
-it('renders a target', () => {
-  const el = div()
-  el.dataset.dataGame = 'col-1'
-  el.className = targetClass
-
-  const wrap = div()
-  wrap.style.width = '40px'
-  wrap.style.position = 'relative'
-  wrap.appendChild(el)
-
-  mount(wrap)
-
-  cy.get(classify(targetClass))
-
-  window.addEventListener('keydown', (event: KeyboardEvent) => {
-    applyTargetHitAnim(el)
-  })
+  notes.map(mount)
 })
